@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 #coding: utf-8
 
-import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains #引入ActionChains鼠标操作类
+from selenium.webdriver.common.action_chains import ActionChains
+from email.mime.text import MIMEText
+import unittest
+import smtplib
 import time
 
 
@@ -38,42 +40,46 @@ class PythonOrgSearch(unittest.TestCase):
 
         if len(checkList) != 0:
             for i in checkList:
-                self.getContent(i)
+                title, content = self.getContent(i)
+                print title
+                print content
+                #self.send_mail(self.getContent(i))
+
 
     def getContent(self, checkURL):
         driver = self.driver
         driver.get(checkURL)
-        c = driver.find_element_by_class_name('content')
-        return c.text
-
+        content = driver.find_element_by_class_name('content')
         
+        return driver.title, content.text
+        
+        
+    # Sent new content to mail
     def send_mail(self, c):
-        
+        msg = MIMEText(str(c))
+        me = 'sasori.haku@gmail.com'
+        you = 'sasori.haku@gmail.com'
+        msg['Subject'] = 'Contents'
+        msg['From'] = me
+        msg['To'] = you
 
+        s = smtplib.SMTP('localhost')
+        s.sendmail(me, [you], msg.as_string())
+        s.quit()
 
-
+    # Write new record to file
     def write_to_file(self, l):
         f = open('record', 'w')
         for i in l:
             f.write(i.encode('ascii', 'ignore')+'\n')
         f.close()
 
+    # Get saved record
     def get_file_content(self):
         f = open('record', 'r')
         a = f.readlines()
         f.close()
         return a
-
-
-        #print type(elem[0].text)
-        #a = elem[0].find_element_by_tag_name('tbody')
-        #b = a.find_element_by__name
-
-        
-       # elem.send_keys("pycon")
-       # elem.send_keys(Keys.RETURN)
-       # assert "No results found." not in driver.page_source
-
 
     def tearDown(self):
         self.driver.close()
