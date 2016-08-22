@@ -29,7 +29,6 @@ class PythonOrgSearch(unittest.TestCase):
         old = self.get_file_content()
         new = []
         for i in eleList[:5]:
-
             a = i.find_element_by_tag_name('a')
             b = a.get_attribute('href')
             new.append(b.encode('ascii', 'ignore'))
@@ -43,9 +42,11 @@ class PythonOrgSearch(unittest.TestCase):
                 break
 
         if len(checkList) != 0:
+            s = smtplib.SMTP('localhost')
             for i in checkList:
                 title, content = self.getContent(i)
-                self.send_mail(title, content)
+                self.send_mail(title, content, s)
+            s.quit()
 
 
     def getContent(self, checkURL):
@@ -57,7 +58,7 @@ class PythonOrgSearch(unittest.TestCase):
         
         
     # Sent new content to mail
-    def send_mail(self, title, content):
+    def send_mail(self, title, content, s):
         msg = MIMEText(content, _charset="UTF-8")
         me = 'sasori.haku@xinbai.com'
         you = '95447986@qq.com'
@@ -65,20 +66,18 @@ class PythonOrgSearch(unittest.TestCase):
         msg['From'] = me
         msg['To'] = you
 
-        s = smtplib.SMTP('localhost')
         s.sendmail(me, [you], msg.as_string())
-        s.quit()
 
     # Write new record to file
     def write_to_file(self, l):
-        f = open('record', 'w')
+        f = open('/root/seleniumTest/record', 'w')
         for i in l:
             f.write(i.encode('ascii', 'ignore')+'\n')
         f.close()
 
     # Get saved record
     def get_file_content(self):
-        f = open('record', 'r')
+        f = open('/root/seleniumTest/record', 'r')
         a = f.readlines()
         f.close()
         return a
