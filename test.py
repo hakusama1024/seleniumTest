@@ -28,7 +28,7 @@ class PythonOrgSearch(unittest.TestCase):
         eleList = driver.find_elements_by_class_name("glfont12")
         old = self.get_file_content()
         new = []
-        for i in eleList[:5]:
+        for i in eleList[:8]:
             a = i.find_element_by_tag_name('a')
             b = a.get_attribute('href')
             new.append(b.encode('ascii', 'ignore'))
@@ -43,9 +43,16 @@ class PythonOrgSearch(unittest.TestCase):
 
         if len(checkList) != 0:
             s = smtplib.SMTP('localhost')
+            title = '' 
+            content = ''
+            content += '\n---------------------------------------------------------------------------------------------\n'
             for i in checkList:
-                title, content = self.getContent(i)
-                self.send_mail(title, content, s)
+                t, c = self.getContent(i)
+                title = t + ' ; ' + title
+                tmp = 'Title: '+ t + '\n' + 'Content: ' + c
+                tmp = '\n---------------------------------------------------------------------------------------------\n' + tmp
+                content = tmp + content
+            self.send_mail(title, content, s)
             s.quit()
 
 
