@@ -4,11 +4,15 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from pyvirtualdisplay import Display
 from email.mime.text import MIMEText
 import unittest
 import smtplib
 import time
 
+display = Display(visible=0, size=(1024, 768))
+display.start()
 
 class PythonOrgSearch(unittest.TestCase):
 
@@ -41,9 +45,7 @@ class PythonOrgSearch(unittest.TestCase):
         if len(checkList) != 0:
             for i in checkList:
                 title, content = self.getContent(i)
-                print title
-                print content
-                #self.send_mail(self.getContent(i))
+                self.send_mail(title, content)
 
 
     def getContent(self, checkURL):
@@ -55,11 +57,11 @@ class PythonOrgSearch(unittest.TestCase):
         
         
     # Sent new content to mail
-    def send_mail(self, c):
-        msg = MIMEText(str(c))
-        me = 'sasori.haku@gmail.com'
-        you = 'sasori.haku@gmail.com'
-        msg['Subject'] = 'Contents'
+    def send_mail(self, title, content):
+        msg = MIMEText(content, _charset="UTF-8")
+        me = 'sasori.haku@xinbai.com'
+        you = '95447986@qq.com'
+        msg['Subject'] = title 
         msg['From'] = me
         msg['To'] = you
 
@@ -86,3 +88,4 @@ class PythonOrgSearch(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    display.stop()
