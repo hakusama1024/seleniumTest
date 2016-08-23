@@ -68,7 +68,7 @@ class PythonOrgSearch(unittest.TestCase):
     def send_mail(self, title, content, s):
         msg = MIMEText(content, _charset="UTF-8")
         me = 'sasori.haku@xinbai.com'
-        you = '95447986@qq.com'
+        you = 'dorisliujun@163.com'
         msg['Subject'] = title 
         msg['From'] = me
         msg['To'] = you
